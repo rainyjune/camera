@@ -1,11 +1,16 @@
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
 var video, videoBtn, burstBtn, photoBtn;
 
+var screenshotPreviewer;
+
+var localMediaStream = null;
+
 function onDOMContentLoaded() {
   video = document.querySelector('#camera');
   videoBtn = document.querySelector('#video-button'),
   burstBtn = document.querySelector('#burst-button'),
   photoBtn = document.querySelector('#photo-button');
+  screenshotPreviewer = document.querySelector('#screenshot-previewer');
 
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     alert('Sorry, your browser does not support getUserMedia()');
@@ -17,6 +22,7 @@ function onDOMContentLoaded() {
   };
   navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
     /* use the stream */  
+    localMediaStream = mediaStream;
     video.srcObject = mediaStream;
     video.onloadedmetadata = function() {
       video.play();
@@ -31,6 +37,15 @@ function addEventListeners() {
   videoBtn.addEventListener('click', onVideoButtonClick, false);
   burstBtn.addEventListener('click', onBurstButtonClick, false);
   photoBtn.addEventListener('click', onPhotoButtonClick, false);
+  
+  screenshotPreviewer.addEventListener('transitionend', function() {
+    // Resume video playback
+    video.play();
+    // Restore screenshot previewer
+    screenshotPreviewer.style.removeProperty('visibility');
+    screenshotPreviewer.style.removeProperty('background-image');
+    screenshotPreviewer.classList.remove('slideLeft');
+  }, false);
 }
 
 function onVideoButtonClick(e) {
@@ -46,9 +61,12 @@ function onBurstButtonClick(e) {
 }
 
 function onPhotoButtonClick(e) {
+  video.pause();
   videoBtn.classList.remove('active');
   burstBtn.classList.remove('active');
   photoBtn.classList.add('active');
+  
+  if (!localMediaStream) return false;
   
   var canvas = document.createElement('canvas');
   canvas.width = video.width || window.innerWidth; // TODO video.width === 0
@@ -56,6 +74,11 @@ function onPhotoButtonClick(e) {
   var ctx = canvas.getContext('2d');
   ctx.drawImage(video, 0, 0);
   var url = canvas.toDataURL();
+
+  screenshotPreviewer.style.visibility = 'visible';
+  screenshotPreviewer.style.backgroundImage = 'url(' + url + ')';
+  screenshotPreviewer.classList.add('slideLeft');
+  
   var photoName = 'yuancamera-' + (Date.now()) + '.png';
   downloadFile(photoName, url);
 }
