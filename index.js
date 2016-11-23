@@ -69,8 +69,8 @@ function onPhotoButtonClick(e) {
   if (!localMediaStream) return false;
   
   var canvas = document.createElement('canvas');
-  canvas.width = video.width || window.innerWidth; // TODO video.width === 0
-  canvas.height = video.height || window.innerHeight;// TODO video.height === 0
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
   var ctx = canvas.getContext('2d');
   ctx.drawImage(video, 0, 0);
   var url = canvas.toDataURL();
