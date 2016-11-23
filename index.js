@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
+var video, videoBtn, burstBtn, photoBtn;
+
 function onDOMContentLoaded() {
-  var video = document.querySelector('#camera');
-  var videoBtn = document.querySelector('#video-button'),
-      burstBtn = document.querySelector('#burst-button'),
-      photoBtn = document.querySelector('#photo-button');
-  
+  video = document.querySelector('#camera');
+  videoBtn = document.querySelector('#video-button'),
+  burstBtn = document.querySelector('#burst-button'),
+  photoBtn = document.querySelector('#photo-button');
+
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     alert('Sorry, your browser does not support getUserMedia()');
     return false;
@@ -21,8 +23,32 @@ function onDOMContentLoaded() {
     };
     // Defaults to Single Photo mode
     photoBtn.classList.add('active');
-    
+    addEventListeners();
   }).catch(handleGetUserMediaError);
+}
+
+function addEventListeners() {
+  videoBtn.addEventListener('click', onVideoButtonClick, false);
+  burstBtn.addEventListener('click', onBurstButtonClick, false);
+  photoBtn.addEventListener('click', onPhotoButtonClick, false);
+}
+
+function onVideoButtonClick(e) {
+  videoBtn.classList.add('active');
+  burstBtn.classList.remove('active');
+  photoBtn.classList.remove('active');
+}
+
+function onBurstButtonClick(e) {
+  videoBtn.classList.remove('active');
+  burstBtn.classList.add('active');
+  photoBtn.classList.remove('active');
+}
+
+function onPhotoButtonClick(e) {
+  videoBtn.classList.remove('active');
+  burstBtn.classList.remove('active');
+  photoBtn.classList.add('active');
 }
 
 function handleGetUserMediaError(err){
