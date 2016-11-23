@@ -49,6 +49,14 @@ function onPhotoButtonClick(e) {
   videoBtn.classList.remove('active');
   burstBtn.classList.remove('active');
   photoBtn.classList.add('active');
+  
+  var canvas = document.createElement('canvas');
+  canvas.width = video.width || window.innerWidth; // TODO video.width === 0
+  canvas.height = video.height || window.innerHeight;// TODO video.height === 0
+  var ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  var url = canvas.toDataURL();
+  window.open(url);
 }
 
 function handleGetUserMediaError(err){
