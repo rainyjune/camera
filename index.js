@@ -56,10 +56,14 @@ function onPhotoButtonClick(e) {
   var ctx = canvas.getContext('2d');
   ctx.drawImage(video, 0, 0);
   var url = canvas.toDataURL();
-  
+  var photoName = 'yuancamera-' + (Date.now()) + '.png';
+  downloadFile(photoName, url);
+}
+
+function downloadFile(fileName, fileUrl) {
   var downloadLink = document.createElement('a');
-  downloadLink.href = url;
-  downloadLink.download = 'yuancamera-' + (Date.now()) + '.png';
+  downloadLink.href = fileUrl;
+  downloadLink.download = fileName;
   downloadLink.click();
 }
 
