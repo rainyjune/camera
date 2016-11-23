@@ -56,7 +56,11 @@ function onPhotoButtonClick(e) {
   var ctx = canvas.getContext('2d');
   ctx.drawImage(video, 0, 0);
   var url = canvas.toDataURL();
-  window.open(url);
+  
+  var downloadLink = document.createElement('a');
+  downloadLink.href = url;
+  downloadLink.download = 'yuancamera-' + (Date.now()) + '.png';
+  downloadLink.click();
 }
 
 function handleGetUserMediaError(err){
