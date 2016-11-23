@@ -14,6 +14,9 @@ video {
   height: 100%;
   
   visibility: hidden;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
 }
 
 .transition {
@@ -25,6 +28,9 @@ video {
   -moz-transition-property: -moz-transform;
   -o-transition-property: -o-transform;
   transition-property: transform;
+  
+  -webkit-transition-timing-function: linear;
+  transition-timing-function: linear;
   
   overflow: hidden !important;
 }
