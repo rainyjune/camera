@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
 var video, videoBtn, burstBtn, photoBtn;
 
 var screenshotPreviewer;
+var chunks = [];
+var mediaRecorder;
 var recordingTimer;
 var recordingDurationViewer;
 
@@ -25,6 +27,16 @@ function onDOMContentLoaded() {
   };
   navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
     /* use the stream */  
+    mediaRecorder = new MediaRecorder(mediaStream);
+    mediaRecorder.ondataavailable = function(e) {
+      chunks.push(e.data);
+    };
+    mediaRecorder.onstop = function(e) {
+      var blob = new Blob(chunks, { type: 'video/webm' });
+      chunks = [];
+      downloadFile('yuanvideo-'+(Date.now())+'.webm', URL.createObjectURL(blob));
+    };
+    
     localMediaStream = mediaStream;
     video.srcObject = mediaStream;
     video.onloadedmetadata = function() {
@@ -59,6 +71,8 @@ function onVideoButtonClick(e) {
   photoBtn.classList.remove('active');
   
   if (targetClassList.contains('ready')) {
+    mediaRecorder.start();
+    
     targetClassList.remove('ready');
     targetClassList.add('recording');
     
@@ -69,6 +83,10 @@ function onVideoButtonClick(e) {
     photoBtn.classList.add('hidden');
     
   } else {
+    if ( mediaRecorder.state !== "inactive") {
+      mediaRecorder.stop();
+    }
+    
     targetClassList.remove('recording');
     targetClassList.add('ready');
     
