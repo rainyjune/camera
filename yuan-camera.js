@@ -10,6 +10,7 @@
   var recordingDurationViewer;
 
   var localMediaStream = null;
+  var videoTracks;
 
   function initialize() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -23,6 +24,7 @@
     navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
       /* use the stream */  
       setupMediaRecorder(mediaStream);
+      videoTracks = mediaStream.getVideoTracks();
       
       localMediaStream = mediaStream;
       video.srcObject = mediaStream;
@@ -48,18 +50,30 @@
   }
 
   function addEventListeners() {
-    videoBtn.addEventListener('click', onVideoButtonClick, false);
-    burstBtn.addEventListener('click', onBurstButtonClick, false);
-    photoBtn.addEventListener('click', onPhotoButtonClick, false);
+    videoBtn.addEventListener('click', onVideoButtonClick);
+    burstBtn.addEventListener('click', onBurstButtonClick);
+    photoBtn.addEventListener('click', onPhotoButtonClick);
+    screenshotPreviewer.addEventListener('transitionend', onPreviewerTransitionend);
+  }
+  
+  function onPreviewerTransitionend() {
+    // Resume video playback
+    video.play();
+    // Restore screenshot previewer
+    screenshotPreviewer.style.removeProperty('visibility');
+    screenshotPreviewer.style.removeProperty('background-image');
+    screenshotPreviewer.classList.remove('slideLeft');
+  }
+  
+  function removeEventListeners() {
+    videoBtn.removeEventListener('click', onVideoButtonClick);
+    burstBtn.removeEventListener('click', onBurstButtonClick);
+    photoBtn.removeEventListener('click', onPhotoButtonClick);
+    screenshotPreviewer.removeEventListener('transitionend', onPreviewerTransitionend);
     
-    screenshotPreviewer.addEventListener('transitionend', function() {
-      // Resume video playback
-      video.play();
-      // Restore screenshot previewer
-      screenshotPreviewer.style.removeProperty('visibility');
-      screenshotPreviewer.style.removeProperty('background-image');
-      screenshotPreviewer.classList.remove('slideLeft');
-    }, false);
+    video.onloadedmetadata = null;
+    mediaRecorder.ondataavailable = null;
+    mediaRecorder.onstop = null;
   }
 
   function onVideoButtonClick(e) {
@@ -204,7 +218,18 @@
       initialize();
     },
     dispose: function() {
+      if ( mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+      }
+      // Stop all video streams.
+      if (videoTracks) {
+        videoTracks.forEach(function(track) {track.stop()});
+      }
+      removeEventListeners();
       
+      localMediaStream = null;
+      chunks = [];
+      videoTracks = null;
     }
   };
   
