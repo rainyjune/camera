@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
 var video, videoBtn, burstBtn, photoBtn;
 
 var screenshotPreviewer;
+var recordingTimer;
+var recordingDurationViewer;
 
 var localMediaStream = null;
 
@@ -11,6 +13,7 @@ function onDOMContentLoaded() {
   burstBtn = document.querySelector('#burst-button'),
   photoBtn = document.querySelector('#photo-button');
   screenshotPreviewer = document.querySelector('#screenshot-previewer');
+  recordingDurationViewer = document.querySelector('#recording-duration');
 
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     alert('Sorry, your browser does not support getUserMedia()');
@@ -59,6 +62,7 @@ function onVideoButtonClick(e) {
     targetClassList.remove('ready');
     targetClassList.add('recording');
     
+    showRecordingDuration();
     
     // Hide the other two buttons
     burstBtn.classList.add('hidden');
@@ -71,6 +75,8 @@ function onVideoButtonClick(e) {
     // Show the other two buttons
     burstBtn.classList.remove('hidden');
     photoBtn.classList.remove('hidden');
+    
+    hideRecordingDuration();
   }
 }
 
@@ -108,6 +114,34 @@ function downloadFile(fileName, fileUrl) {
   downloadLink.href = fileUrl;
   downloadLink.download = fileName;
   downloadLink.click();
+}
+
+function showRecordingDuration() {
+  var startTime = Date.now();
+  recordingDurationViewer.classList.remove('hidden');
+  recordingTimer = setInterval(function(){    
+    var duration = Date.now() - startTime;
+    recordingDurationViewer.innerText = formatDuration(duration);
+  }, 1000);
+}
+
+function hideRecordingDuration() {
+  recordingDurationViewer.classList.add('hidden');
+  clearInterval(recordingTimer);
+  recordingDurationViewer.innerText = '00:00';
+}
+
+/**
+ * @param {Number} duration In milliseconds
+ */
+function formatDuration(duration) {
+  duration = parseInt(duration / 1000);
+  var seconds = duration % 60;
+  var minutes = (duration - seconds) / 60;
+  
+  seconds = seconds > 9 ? String(seconds) : '0' + seconds;
+  minutes = minutes > 9 ? String(minutes) : '0' + minutes;
+  return minutes + ':' + seconds;
 }
 
 function handleGetUserMediaError(err){
