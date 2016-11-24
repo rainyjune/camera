@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>getUserMedia</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <video id="camera"></video>
+    <div id="screenshot-previewer" class="transition"></div>
+    <div id="control-buttons">
+      <button id="video-button">
+        <span class='recording-button'></span>
+        <span class='recordready-button'></span>
+        <span class="default">Video</span>
+      </button>
+      <button id="burst-button">Burst</button>
+      <button id="photo-button">Photo</button>
+    </div>
+    <div id="recording-duration" class="hidden">
+    00:00
+    </div>
+    <script src="index.js"></script>
+  </body>
+</html>
