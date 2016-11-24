@@ -49,20 +49,40 @@ function addEventListeners() {
 }
 
 function onVideoButtonClick(e) {
+  let targetClassList = videoBtn.classList;
+  
   videoBtn.classList.add('active');
   burstBtn.classList.remove('active');
   photoBtn.classList.remove('active');
+  
+  if (targetClassList.contains('ready')) {
+    targetClassList.remove('ready');
+    targetClassList.add('recording');
+    
+    
+    // Hide the other two buttons
+    burstBtn.classList.add('hidden');
+    photoBtn.classList.add('hidden');
+    
+  } else {
+    targetClassList.remove('recording');
+    targetClassList.add('ready');
+    
+    // Show the other two buttons
+    burstBtn.classList.remove('hidden');
+    photoBtn.classList.remove('hidden');
+  }
 }
 
 function onBurstButtonClick(e) {
-  videoBtn.classList.remove('active');
+  videoBtn.classList.remove('active', 'ready', 'recording');
   burstBtn.classList.add('active');
   photoBtn.classList.remove('active');
 }
 
 function onPhotoButtonClick(e) {
   video.pause();
-  videoBtn.classList.remove('active');
+  videoBtn.classList.remove('active', 'ready', 'recording');
   burstBtn.classList.remove('active');
   photoBtn.classList.add('active');
   

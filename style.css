@@ -65,6 +65,7 @@ video {
   cursor: pointer;
   margin-left: 15px;
   color: white;
+  overflow: hidden;
 }
 
 #control-buttons button:first-child {
@@ -75,4 +76,40 @@ video {
   width: 60px;
   height: 60px;
   border-radius: 30px;
+}
+
+#video-button.ready .default,
+#video-button.recording .default {
+  display: none;
+}
+
+#video-button.ready .recordready-button {
+  display: inline-block;
+}
+
+#video-button.recording {
+  background-color: red;
+}
+
+#video-button.recording .recording-button {
+  display: inline-block;
+}
+
+.recordready-button {
+  width: 26px;
+  height: 26px;
+  border-radius: 13px;
+  background-color: red;
+  display: none;
+}
+
+.recording-button {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  display: none;
+}
+
+.hidden {
+  visibility: hidden;
 }
