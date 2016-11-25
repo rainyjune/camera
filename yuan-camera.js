@@ -11,6 +11,8 @@
 
   var localMediaStream = null;
   var videoTracks;
+  
+  var burstTimer;
 
   function initialize() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -112,9 +114,59 @@
   }
 
   function onBurstButtonClick(e) {
-    videoBtn.classList.remove('active', 'ready', 'recording');
-    burstBtn.classList.add('active');
-    photoBtn.classList.remove('active');
+    var burstBtnClassList = burstBtn.classList;
+    if (burstBtnClassList.contains('active')) {
+      // Burst it
+      var count = 0;
+      var burstImages = [];
+      var burstFunc = function() {
+        if (count > 9) {
+          clearInterval(burstTimer);
+          recordingDurationViewer.innerText = 1;
+          recordingDurationViewer.classList.add('hidden');
+          // show burst image list
+          showBurstImages(burstImages);
+          return false;
+        }
+        count++;
+        recordingDurationViewer.innerText = count;
+        var url = getSnapshotURL();
+        burstImages.push(url);
+        //console.log('count #' + count);
+      };
+      setTimeout(function(){
+        burstFunc();
+        recordingDurationViewer.classList.remove('hidden');
+      }, 0);
+      burstTimer = window.setInterval(burstFunc, 100);
+    } else {
+      // Ready to burst
+      videoBtn.classList.remove('active', 'ready', 'recording');
+      burstBtnClassList.add('active');
+      photoBtn.classList.remove('active');
+    }    
+  }
+  
+  function showBurstImages(burstImages) {
+    var burstPreviwer = document.querySelector('#burst-previewer');
+    burstImages.forEach(function(image){
+      var img = document.createElement('img');
+      img.src = image;
+      img.alt = '';
+      burstPreviwer.appendChild(img);
+    });
+    
+    burstPreviwer.classList.remove('hidden');
+  }
+  
+  function getSnapshotURL() {
+    var canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+    var url = canvas.toDataURL();
+    return url;
   }
 
   function onPhotoButtonClick(e) {
@@ -125,12 +177,7 @@
     
     if (!localMediaStream) return false;
     
-    var canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    var ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0);
-    var url = canvas.toDataURL();
+    var url = getSnapshotURL();
 
     screenshotPreviewer.style.visibility = 'visible';
     screenshotPreviewer.style.backgroundImage = 'url(' + url + ')';

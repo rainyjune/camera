@@ -7,9 +7,5 @@ document.addEventListener('DOMContentLoaded', function() {
     snapshotpreview: '#screenshot-previewer', 
     recordingduration: '#recording-duration'
   };
-  
-  setTimeout(function(){
-    YuanCameraApp.setup(appOptions);
-  }, 10000);
-  
+  YuanCameraApp.setup(appOptions);
 }, false);
