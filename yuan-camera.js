@@ -103,6 +103,8 @@
     photoBtn.removeEventListener('click', onPhotoButtonClick);
     screenshotPreviewer.removeEventListener('transitionend', onPreviewerTransitionend);
     
+    burstPreviwer.removeEventListener('click', onBurstViewerClick);
+    
     video.onloadedmetadata = null;
     mediaRecorder.ondataavailable = null;
     mediaRecorder.onstop = null;
