@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width" />
     <title>Yuan Camera</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="swiper.min.css" />
+    <link rel="stylesheet" href="preview.css" />
   </head>
   <body>
     <div id="page-default" class="page">
@@ -24,12 +26,14 @@
       </div>
     </div>
     <div id="page-burst" class="page">
-      <div id="singlePhotoViewer">
-        <!-- 1x1px Transparent GIF -->
-        <img id="singleBurstPhoto" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+      <div class="swiper-container gallery-top">
+        <div class="swiper-wrapper"></div>
       </div>
-      <div id="burst-previewer" class="hidden"></div>
+      <div class="swiper-container gallery-thumbs">
+        <div class="swiper-wrapper"></div>
+      </div>
     </div>
+    <script src="swiper.min.js"></script>
     <script src="yuan-camera.js"></script>
     <script src="index.js"></script>
   </body>

@@ -16,8 +16,6 @@
   
   var defaultPage,
       burstviewPage;
-      
-  var burstPreviwer;
 
   function initialize() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -29,7 +27,6 @@
     defaultPage.classList.add('active');
     
     burstviewPage = document.querySelector('#page-burst');
-    burstPreviwer = document.querySelector('#burst-previewer');
     
     var constraints = { 
       audio: true, 
@@ -68,24 +65,6 @@
     burstBtn.addEventListener('click', onBurstButtonClick);
     photoBtn.addEventListener('click', onPhotoButtonClick);
     screenshotPreviewer.addEventListener('transitionend', onPreviewerTransitionend);
-    
-    burstPreviwer.addEventListener('click', onBurstViewerClick);
-  }
-  
-  function onBurstViewerClick(e) {
-    var target = e.target;
-    var activeImg = burstPreviwer.querySelector('img.active');
-    if (target.tagName.toLowerCase() !== "img") {
-      return false;
-    }
-    if (target.classList.contains('active')) {
-      return false;
-    }
-    if (activeImg) {
-      activeImg.classList.remove('active');
-    }
-    target.classList.add('active');
-    document.querySelector('#singleBurstPhoto').src = target.src;
   }
   
   function onPreviewerTransitionend() {
@@ -102,8 +81,6 @@
     burstBtn.removeEventListener('click', onBurstButtonClick);
     photoBtn.removeEventListener('click', onPhotoButtonClick);
     screenshotPreviewer.removeEventListener('transitionend', onPreviewerTransitionend);
-    
-    burstPreviwer.removeEventListener('click', onBurstViewerClick);
     
     video.onloadedmetadata = null;
     mediaRecorder.ondataavailable = null;
@@ -179,21 +156,64 @@
     }    
   }
   
-  function showBurstImages(burstImages) {
-    burstImages.forEach(function(image){
-      var img = document.createElement('img');
-      img.src = image;
-      img.alt = '';
-      burstPreviwer.appendChild(img);
+  function buildSwiperElements(images) {
+    var containers = document.querySelectorAll('.swiper-wrapper');
+    var domArr1 = [], domArr2 = [];
+    images.forEach(function(image) {
+      domArr2.push('<div class="swiper-slide"><div class="swiper-zoom-container"><img src="'+image+'" /><div class="checked-icon"></div></div></div>');
     });
+    containers[0].innerHTML = domArr2.join('');
+    containers[1].innerHTML = domArr2.join('');
+  }
+  
+  function showBurstImages(burstImages) {
     
-    burstPreviwer.classList.remove('hidden');
+    buildSwiperElements(burstImages);
     defaultPage.classList.remove('active');
     burstviewPage.classList.add('active');
     
-    var firstImg = burstPreviwer.querySelector('img');
-    firstImg.classList.add('active');
-    document.querySelector('#singleBurstPhoto').src = firstImg.src;
+    var galleryTop = new Swiper('.gallery-top', {
+      initialSlide: 3,
+      spaceBetween: 10,
+      effect: 'fade',
+      speed: 1,
+    });
+    galleryTop.lockSwipes();
+    
+    var galleryThumbs = new Swiper('.gallery-thumbs', {
+      initialSlide: 3,
+      spaceBetween: 10,
+      centeredSlides: true,
+      slidesPerView: 7,
+      touchRatio: 0.2,
+      freeMode: true,
+      onTouchStart: function(swiper, event) {
+        var target = event.target;
+        var slide = target.parentElement;
+        if (!slide.classList.contains('swiper-slide')) {
+          slide = slide.parentElement;
+        }
+        var classList = slide.classList;
+        if (classList.contains('swiper-slide-active')) {
+          if (classList.contains('checked')) {
+            classList.remove('checked');
+          } else {
+            classList.add('checked');
+          }
+        }
+        return false;
+        var activeSlide = swiper.slides[swiper.activeIndex];
+        var classList = activeSlide.classList;
+        if (classList.contains('checked')) {
+          classList.remove('checked');
+        } else {
+          classList.add('checked');
+        }
+      },
+      slideToClickedSlide: true
+    });
+    galleryThumbs.params.control = galleryTop;
+    return false;
   }
   
   function getSnapshotURL() {
