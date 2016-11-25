@@ -13,12 +13,24 @@
   var videoTracks;
   
   var burstTimer;
+  
+  var defaultPage,
+      burstviewPage;
+      
+  var burstPreviwer;
 
   function initialize() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       alert('Sorry, your browser does not support getUserMedia()');
       return false;
     }
+    
+    defaultPage = document.querySelector('#page-default');
+    defaultPage.classList.add('active');
+    
+    burstviewPage = document.querySelector('#page-burst');
+    burstPreviwer = document.querySelector('#burst-previewer');
+    
     var constraints = { 
       audio: true, 
       video: true
@@ -56,6 +68,24 @@
     burstBtn.addEventListener('click', onBurstButtonClick);
     photoBtn.addEventListener('click', onPhotoButtonClick);
     screenshotPreviewer.addEventListener('transitionend', onPreviewerTransitionend);
+    
+    burstPreviwer.addEventListener('click', onBurstViewerClick);
+  }
+  
+  function onBurstViewerClick(e) {
+    var target = e.target;
+    var activeImg = burstPreviwer.querySelector('img.active');
+    if (target.tagName.toLowerCase() !== "img") {
+      return false;
+    }
+    if (target.classList.contains('active')) {
+      return false;
+    }
+    if (activeImg) {
+      activeImg.classList.remove('active');
+    }
+    target.classList.add('active');
+    document.querySelector('#singleBurstPhoto').src = target.src;
   }
   
   function onPreviewerTransitionend() {
@@ -148,7 +178,6 @@
   }
   
   function showBurstImages(burstImages) {
-    var burstPreviwer = document.querySelector('#burst-previewer');
     burstImages.forEach(function(image){
       var img = document.createElement('img');
       img.src = image;
@@ -157,6 +186,12 @@
     });
     
     burstPreviwer.classList.remove('hidden');
+    defaultPage.classList.remove('active');
+    burstviewPage.classList.add('active');
+    
+    var firstImg = burstPreviwer.querySelector('img');
+    firstImg.classList.add('active');
+    document.querySelector('#singleBurstPhoto').src = firstImg.src;
   }
   
   function getSnapshotURL() {
