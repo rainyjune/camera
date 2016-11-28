@@ -37,23 +37,3 @@ body {
 .gallery-thumbs .swiper-slide-active {
   opacity: 1;
 }
-
-.gallery-thumbs .swiper-slide.checked {
-  
-}
-
-.gallery-thumbs .swiper-slide .checked-icon {
-  width: 50px;
-  height: 50px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -25px;
-  margin-top: -25px;
-  display: none;
-  background-color: red;
-}
-
-.gallery-thumbs .swiper-slide.checked .checked-icon {
-  display: block;
-}

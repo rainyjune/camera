@@ -177,7 +177,7 @@
     var containers = document.querySelectorAll('.swiper-wrapper');
     var domArr1 = [], domArr2 = [];
     images.forEach(function(image) {
-      domArr2.push('<div class="swiper-slide"><div class="swiper-zoom-container"><img src="'+image+'" /><div class="checked-icon"></div></div></div>');
+      domArr2.push('<div class="swiper-slide"><div class="swiper-zoom-container"><img src="'+image+'" /><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></div></div>');
     });
     containers[0].innerHTML = domArr2.join('');
     containers[1].innerHTML = domArr2.join('');
@@ -218,14 +218,9 @@
             classList.add('checked');
           }
         }
+        var selectedPhotosNum = document.querySelectorAll('.gallery-thumbs .swiper-slide.checked img').length;
+        burstsaveBtn.querySelector('.glyphicon-save-file').classList.toggle('active', selectedPhotosNum);
         return false;
-        var activeSlide = swiper.slides[swiper.activeIndex];
-        var classList = activeSlide.classList;
-        if (classList.contains('checked')) {
-          classList.remove('checked');
-        } else {
-          classList.add('checked');
-        }
       },
       slideToClickedSlide: true
     });
