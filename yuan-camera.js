@@ -16,6 +16,8 @@
   
   var defaultPage,
       burstviewPage;
+      
+  var burstsaveBtn;
 
   function initialize() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -27,6 +29,8 @@
     defaultPage.classList.add('active');
     
     burstviewPage = document.querySelector('#page-burst');
+    
+    burstsaveBtn = document.querySelector('#burstsave-button');
     
     var constraints = { 
       audio: true, 
@@ -65,6 +69,17 @@
     burstBtn.addEventListener('click', onBurstButtonClick);
     photoBtn.addEventListener('click', onPhotoButtonClick);
     screenshotPreviewer.addEventListener('transitionend', onPreviewerTransitionend);
+    
+    burstsaveBtn.addEventListener('click', onBurstsaveButtonClick);
+  }
+  
+  function onBurstsaveButtonClick() {
+    var checkedPhotos = document.querySelectorAll('.gallery-thumbs .swiper-slide.checked img');
+    if (!checkedPhotos.length) return false;
+    checkedPhotos.forEach(function(photo){
+      var photoName = 'yuancamera-' + (Date.now()) + '.png';
+      downloadFile(photoName, photo.src);
+    });
   }
   
   function onPreviewerTransitionend() {
@@ -81,6 +96,8 @@
     burstBtn.removeEventListener('click', onBurstButtonClick);
     photoBtn.removeEventListener('click', onPhotoButtonClick);
     screenshotPreviewer.removeEventListener('transitionend', onPreviewerTransitionend);
+    
+    burstsaveBtn.removeEventListener('click', onBurstsaveButtonClick);
     
     video.onloadedmetadata = null;
     mediaRecorder.ondataavailable = null;

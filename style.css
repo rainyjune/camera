@@ -13,6 +13,11 @@ div.page {
   display: none;
 }
 
+div#page-burst {
+  display: flex;
+  flex-direction: column;
+}
+
 div.page.active {
   display: block;
 }
@@ -178,4 +183,22 @@ video {
 
 #singleBurstPhoto {
   width: 100%;
+}
+
+#page-burst .toolbar {
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+}
+
+#page-burst .toolbar button {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  margin-left: 15px;
+  color: white;
+  overflow: hidden;
 }
